@@ -1,0 +1,36 @@
+# Virtual environment
+venv/
+.venv/
+
+# Environment variables / secrets
+.env
+.env.*
+
+# Python cache
+__pycache__/
+__pycache__
+*.py[cod]
+
+# Django local database
+db.sqlite3
+*.sqlite3
+
+# Uploaded files
+media/
+
+# Collected static files
+staticfiles/
+
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
