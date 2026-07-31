@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ booking.booking_reference }} | Five Homes</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .card {
+            padding: 30px;
+            margin-bottom: 24px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 3px 14px rgba(0, 0, 0, 0.06);
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .label {
+            margin-bottom: 5px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .value {
+            font-weight: 600;
+        }
+
+        textarea {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        button {
+            padding: 12px 18px;
+            border: 0;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .accept {
+            background: #15803d;
+        }
+
+        .decline {
+            background: #b91c1c;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #1e3a5f;
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            background: #e0f2fe;
+            color: #075985;
+        }
+
+        .errorlist {
+            color: #b91c1c;
+        }
+
+        @media (max-width: 700px) {
+            .details,
+            .actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+        <a
+            class="back"
+            href="{% url 'bookings:receptionist-dashboard' %}"
+        >
+            ← Back to dashboard
+        </a>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <section class="card">
+            <h1>{{ booking.booking_reference }}</h1>
+
+            <div class="details">
+                <div>
+                    <div class="label">Guest</div>
+                    <div class="value">{{ booking.guest_name }}</div>
+                </div>
+
+                <div>
+                    <div class="label">Email</div>
+                    <div class="value">{{ booking.guest_email }}</div>
+                </div>
+
+                <div>
+                    <div class="label">Phone</div>
+                    <div class="value">
+                        {{ booking.guest_phone|default:"Not provided" }}
+                    </div>
+                </div>
+
+                <div>
+                    <div class="label">Room type</div>
+                    <div class="value">{{ booking.room_type }}</div>
+                </div>
+
+                <div>
+                    <div class="label">Check-in</div>
+                    <div class="value">{{ booking.check_in_date }}</div>
+                </div>
+
+                <div>
+                    <div class="label">Check-out</div>
+                    <div class="value">{{ booking.check_out_date }}</div>
+                </div>
+
+                <div>
+                    <div class="label">Number of guests</div>
+                    <div class="value">{{ booking.number_of_guests }}</div>
+                </div>
+
+                <div>
+                    <div class="label">Status</div>
+                    <div class="value">
+                        {{ booking.get_status_display }}
+                    </div>
+                </div>
+            </div>
+
+            <h3>Special requests</h3>
+
+            <p>
+                {{ booking.special_requests|default:"No special requests." }}
+            </p>
+
+            {% if booking.decline_reason %}
+                <h3>Decline reason</h3>
+                <p>{{ booking.decline_reason }}</p>
+            {% endif %}
+        </section>
+
+        {% if booking.status == booking.Status.PAID %}
+            <section class="actions">
+                <div class="card">
+                    <h2>Accept booking</h2>
+
+                    <p>
+                        Confirm that the hotel can accommodate this guest.
+                    </p>
+
+                    <form
+                        method="post"
+                        action="{% url 'bookings:accept-booking' booking.booking_reference %}"
+                    >
+                        {% csrf_token %}
+
+                        <button class="accept" type="submit">
+                            Accept and confirm
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2>Decline booking</h2>
+
+                    <p>
+                        A reason is required. The booking will become
+                        refund eligible.
+                    </p>
+
+                    <form
+                        method="post"
+                        action="{% url 'bookings:decline-booking' booking.booking_reference %}"
+                    >
+                        {% csrf_token %}
+
+                        {{ decline_form.as_p }}
+
+                        <button class="decline" type="submit">
+                            Decline booking
+                        </button>
+                    </form>
+                </div>
+            </section>
+        {% else %}
+            <section class="card">
+                <p>
+                    This booking has already been processed by
+                    {{ booking.reviewed_by|default:"a staff member" }}.
+                </p>
+            </section>
+        {% endif %}
+    </main>
+</body>
+</html>

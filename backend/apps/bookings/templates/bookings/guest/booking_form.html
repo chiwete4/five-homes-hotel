@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Book a Room | Five Homes</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 760px;
+            margin: auto;
+        }
+
+        .card {
+            padding: 35px;
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #1e3a5f;
+        }
+
+        form p {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            font: inherit;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: 0;
+            border-radius: 7px;
+            background: #1e3a5f;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .errorlist {
+            padding-left: 20px;
+            color: #b91c1c;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+        <section class="card">
+            <h1>Book your stay</h1>
+
+            <p>
+                Complete your details and select your preferred room.
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+
+                <button type="submit">
+                    Continue to payment
+                </button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>
